@@ -1,0 +1,87 @@
+﻿@page "/register"
+@using AuthenticationProject.Shared
+@inject HttpClient Http
+
+<h3>Register</h3>
+
+<p>@message</p>
+<p><a href="/login">@login</a></p>
+
+<EditForm Model="reg" OnValidSubmit="OnValid" style="max-width:500px;">
+	<DataAnnotationsValidator />
+	<ValidationSummary />
+	<div class="mb-2">
+		<InputText class="form-control" @bind-Value="reg.email" placeholder="Enter Email"></InputText>
+	</div>
+	<div class="mb-2">
+		<InputText type="password" class="form-control" @bind-Value="reg.password" placeholder="Enter Password"></InputText>
+	</div>
+	<div class="mb-2">
+		<InputText type="password" class="form-control" @bind-Value="reg.confirmpwd" placeholder="Confirm Password"></InputText>
+	</div>
+	<div class="mb-2">
+		<textarea >@TokenMessage</textarea>
+	</div>
+<div class="mb-2">
+	@if (!string.IsNullOrWhiteSpace(Label))
+	{
+		<label for="@Id">@Label</label>
+	}
+	<div class="input-group mb-3 ">
+		<input type="text" class="form-control textbox-parameters" id="@Id" value="@Value" @onchange="this.OnChange">
+	</div>
+</div>
+	
+
+	<div class="mb-2 text-right">
+		<button class="btn btn-secondary" disabled="@isDisabled">register</button>
+	</div>
+	<br/>
+
+		
+	
+</EditForm>
+
+
+@code {
+	 public string TokenMessage { get; set; } = "";
+	[Parameter] public string Value { get; set; } = "";
+	[Parameter] public EventCallback<string> ValueChanged { get; set; }
+
+	[Parameter] public string? Label { get; set; }
+	[Parameter] public string? Id { get; set; }
+
+	private void OnChange(ChangeEventArgs e)
+	{
+		ValueChanged.InvokeAsync(e.Value.ToString());
+	}
+	RegModel reg = new RegModel();
+	string message = string.Empty, login = string.Empty;
+	bool isDisabled = false;
+
+
+	private async Task OnValid()
+	{
+		isDisabled = true;
+		using (var msg = await Http.PostAsJsonAsync<RegModel>("/api/auth/register", reg, System.Threading.CancellationToken.None))
+		{
+			if (msg.IsSuccessStatusCode)
+			{
+
+				LoginResult result = await msg.Content.ReadFromJsonAsync<LoginResult>();
+				message = result.message;
+				TokenMessage = result.jwtBearer;
+				
+
+				if (result.success )
+				{
+					message += " Please LOGIN to continue.";
+					login = "Click here to LOGIN.";
+				}
+				else
+					isDisabled = false;
+			}
+		}
+	}
+
+}
