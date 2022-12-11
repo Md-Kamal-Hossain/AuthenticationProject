@@ -28,13 +28,15 @@
 		<label for="@Id">@Label</label>
 	}
 	<div class="input-group mb-3 ">
-		<input type="text" class="form-control textbox-parameters" id="@Id" value="@Value" @onchange="this.OnChange">
-	</div>
+			<input type="text" class="form-control textbox-parameters" value="@userEnteredToken" @oninput="(EventArgs) => {SetValue(EventArgs.Value.ToString());}">
+
+</div>
 </div>
 	
 
 	<div class="mb-2 text-right">
-		<button class="btn btn-secondary" disabled="@isDisabled">register</button>
+		<button class="btn btn-secondary" disabled="@isDisabled" type="submit" @onclick="@(()=> isReg = false)">Generate token</button>
+		<button class="btn btn-secondary"  type="submit" @onclick="@(()=> isReg = true)">Register</button>
 	</div>
 	<br/>
 
@@ -44,7 +46,7 @@
 
 
 @code {
-	 public string TokenMessage { get; set; } = "";
+	public string TokenMessage { get; set; } = "";
 	[Parameter] public string Value { get; set; } = "";
 	[Parameter] public EventCallback<string> ValueChanged { get; set; }
 
@@ -58,30 +60,74 @@
 	RegModel reg = new RegModel();
 	string message = string.Empty, login = string.Empty;
 	bool isDisabled = false;
-
+	bool isReg = false;
+	string userEnteredToken;
+	private void SetValue(string Value)
+	{
+		userEnteredToken = Value;
+	}
 
 	private async Task OnValid()
 	{
 		isDisabled = true;
-		using (var msg = await Http.PostAsJsonAsync<RegModel>("/api/auth/register", reg, System.Threading.CancellationToken.None))
+		if (isReg)
 		{
-			if (msg.IsSuccessStatusCode)
+			Console.WriteLine(userEnteredToken);
+			if (!userEnteredToken.Equals(TokenMessage))
 			{
-
-				LoginResult result = await msg.Content.ReadFromJsonAsync<LoginResult>();
-				message = result.message;
-				TokenMessage = result.jwtBearer;
-				
-
-				if (result.success )
+				message = "Wrong token is provided";
+				login = "Click here to LOGIN.";
+			}
+			else
+			{
+				using (var msg = await Http.PostAsJsonAsync<RegModel>("/api/auth/register", reg, System.Threading.CancellationToken.None))
 				{
-					message += " Please LOGIN to continue.";
-					login = "Click here to LOGIN.";
+					if (msg.IsSuccessStatusCode)
+					{
+
+						LoginResult result = await msg.Content.ReadFromJsonAsync<LoginResult>();
+						message = result.message;
+						TokenMessage = result.jwtBearer;
+
+
+						if (result.success)
+						{
+							message += " Please LOGIN to continue.";
+							login = "Click here to LOGIN.";
+						}
+						else
+							isDisabled = false;
+					}
 				}
-				else
-					isDisabled = false;
+
+			}
+
+
+		}
+		else
+		{
+			using (var msg = await Http.PostAsJsonAsync<RegModel>("/api/auth/tokenGenerator", reg, System.Threading.CancellationToken.None))
+			{
+				if (msg.IsSuccessStatusCode)
+				{
+
+					LoginResult result = await msg.Content.ReadFromJsonAsync<LoginResult>();
+					message = result.message;
+					TokenMessage = result.jwtBearer;
+
+
+					if (result.success)
+					{
+						message += " Please LOGIN to continue.";
+						login = "Click here to LOGIN.";
+					}
+					else
+						isDisabled = false;
+				}
 			}
 		}
+
+
 	}
 
 }

@@ -6,6 +6,7 @@ using static AuthenticationProject.Server.UserDatabase;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using AuthenticationProject.Shared;
+using System;
 
 namespace AuthenticationProject.Server.Controllers
 {
@@ -50,7 +51,20 @@ namespace AuthenticationProject.Server.Controllers
             return new LoginResult { message = "User already exists.", success = false };
         }
 
-        [HttpPost]
+		[HttpPost]
+		[Route("api/auth/tokenGenerator")]
+		public async Task<LoginResult> tokenPost([FromBody] RegModel reg)
+		{
+			const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+			Random random = new Random();
+			var token = new string(Enumerable.Repeat(chars, 20).Select(s => s[random.Next(s.Length)]).ToArray());
+
+			if (reg.password != reg.confirmpwd)
+                return new LoginResult { message = "Password and confirm password do not match.", success = false };
+			return new LoginResult { message = "Token is generated", jwtBearer = token, email = reg.email, success = true };
+		}
+
+		[HttpPost]
         [Route("api/auth/login")]
         public async Task<LoginResult> Post([FromBody] LoginModel log)
         {
