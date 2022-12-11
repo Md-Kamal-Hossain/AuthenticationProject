@@ -3,15 +3,14 @@ using Microsoft.AspNetCore.ResponseCompression;
 
 
 
-using Microsoft.AspNetCore.Authentication.JwtBearer; // NOTE: THIS LINE OF CODE IS NEWLY ADDED
-using Microsoft.IdentityModel.Tokens; // NOTE: THIS LINE OF CODE IS NEWLY ADDED
-using AuthenticationProject.Server; // NOTE: THIS LINE OF CODE IS NEWLY ADDED
+using Microsoft.AspNetCore.Authentication.JwtBearer; 
+using Microsoft.IdentityModel.Tokens; 
+using AuthenticationProject.Server; 
 using static AuthenticationProject.Server.UserDatabase;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddTransient<IUserDatabase, UserDatabase>();  // NOTE: LOCAL AUTHENTICATION ADDED HERE; AddTransient() IS OK TO USE BECAUSE STATE IS SAVED TO THE DRIVE
+builder.Services.AddTransient<IUserDatabase, UserDatabase>(); 
 
-// NOTE: the following block of code is newly added
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
@@ -22,7 +21,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidIssuer = "domain.com",
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("THIS IS THE SECRET KEY")) // NOTE: THIS SHOULD BE A SECRET KEY NOT TO BE SHARED; A GUID IS RECOMMENDED
+        IssuerSigningKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes("THIS IS THE SECRET KEY")) 
     };
 });
 
@@ -49,13 +48,13 @@ app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
-app.UseAuthentication(); // NOTE: line is newly added
+app.UseAuthentication(); 
 
 
 app.UseRouting();
 
 
-app.UseAuthorization(); // NOTE: line is newly addded, notice placement after UseRouting()
+app.UseAuthorization(); 
 
 
 

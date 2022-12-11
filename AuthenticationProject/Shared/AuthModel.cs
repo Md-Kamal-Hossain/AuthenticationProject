@@ -20,7 +20,7 @@ namespace AuthenticationProject.Shared
         {
             [Required(ErrorMessage = "Email is required.")]
             [EmailAddress(ErrorMessage = "Email address is not valid.")]
-            public string email { get; set; } // NOTE: email will be the username, too
+            public string email { get; set; } //  email will be the username, too
 
             [Required(ErrorMessage = "Password is required.")]
             [DataType(DataType.Password)]

@@ -48,9 +48,9 @@ namespace AuthenticationProject.Server
                 {
                     if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password))
                         return null;
-                    var path = System.IO.Path.Combine(env.ContentRootPath, "Users"); // NOTE: THIS WILL CREATE THE "USERS" FOLDER IN THE PROJECT'S FOLDER!!!
+                    var path = System.IO.Path.Combine(env.ContentRootPath, "Users"); 
                     if (!System.IO.Directory.Exists(path))
-                        System.IO.Directory.CreateDirectory(path); // NOTE: MAKE SURE THERE ARE CREATE/WRITE PERMISSIONS
+                        System.IO.Directory.CreateDirectory(path); 
                     path = System.IO.Path.Combine(path, email);
                     if (System.IO.File.Exists(path))
                         return null;
