@@ -23,10 +23,10 @@
 		<textarea >@TokenMessage</textarea>
 	</div>
 <div class="mb-2">
-	@if (!string.IsNullOrWhiteSpace(Label))
+	@*@if (!string.IsNullOrWhiteSpace(Label))
 	{
 		<label for="@Id">@Label</label>
-	}
+	}*@
 	<div class="input-group mb-3 ">
 			<input type="text" class="form-control textbox-parameters" value="@userEnteredToken" @oninput="(EventArgs) => {SetValue(EventArgs.Value.ToString());}">
 
@@ -51,7 +51,7 @@
 	[Parameter] public EventCallback<string> ValueChanged { get; set; }
 
 	[Parameter] public string? Label { get; set; }
-	[Parameter] public string? Id { get; set; }
+	//[Parameter] public string? Id { get; set; }
 
 	private void OnChange(ChangeEventArgs e)
 	{
