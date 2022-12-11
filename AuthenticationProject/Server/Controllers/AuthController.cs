@@ -59,10 +59,11 @@ namespace AuthenticationProject.Server.Controllers
 			Random random = new Random();
 			var token = new string(Enumerable.Repeat(chars, 20).Select(s => s[random.Next(s.Length)]).ToArray());
 
-			if (reg.password != reg.confirmpwd)
+
+            if (reg.password != reg.confirmpwd)
                 return new LoginResult { message = "Password and confirm password do not match.", success = false };
-			return new LoginResult { message = "Token is generated", jwtBearer = token, email = reg.email, success = true };
-		}
+            return new LoginResult { message = "Token is generated", jwtBearer = token, email = reg.email, success = true };
+        }
 
 		[HttpPost]
         [Route("api/auth/login")]

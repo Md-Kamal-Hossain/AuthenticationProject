@@ -23,10 +23,7 @@
 		<textarea >@TokenMessage</textarea>
 	</div>
 <div class="mb-2">
-	@*@if (!string.IsNullOrWhiteSpace(Label))
-	{
-		<label for="@Id">@Label</label>
-	}*@
+	
 	<div class="input-group mb-3 ">
 			<input type="text" class="form-control textbox-parameters" value="@userEnteredToken" @oninput="(EventArgs) => {SetValue(EventArgs.Value.ToString());}">
 
@@ -50,8 +47,8 @@
 	[Parameter] public string Value { get; set; } = "";
 	[Parameter] public EventCallback<string> ValueChanged { get; set; }
 
-	[Parameter] public string? Label { get; set; }
-	//[Parameter] public string? Id { get; set; }
+	//[Parameter] public string? Label { get; set; }
+	
 
 	private void OnChange(ChangeEventArgs e)
 	{
@@ -72,11 +69,11 @@
 		isDisabled = true;
 		if (isReg)
 		{
-			Console.WriteLine(userEnteredToken);
+			//Console.WriteLine(userEnteredToken);
 			if (!userEnteredToken.Equals(TokenMessage))
 			{
 				message = "Wrong token is provided";
-				login = "Click here to LOGIN.";
+				//login = "Click here to LOGIN.";
 			}
 			else
 			{
@@ -87,7 +84,7 @@
 
 						LoginResult result = await msg.Content.ReadFromJsonAsync<LoginResult>();
 						message = result.message;
-						TokenMessage = result.jwtBearer;
+						//TokenMessage = result.jwtBearer;
 
 
 						if (result.success)
@@ -116,13 +113,13 @@
 					TokenMessage = result.jwtBearer;
 
 
-					if (result.success)
-					{
-						message += " Please LOGIN to continue.";
-						login = "Click here to LOGIN.";
-					}
-					else
-						isDisabled = false;
+					//if (result.success)
+					//{
+					//	message += " Please LOGIN to continue.";
+					//	login = "Click here to LOGIN.";
+					//}
+					//else
+					//	isDisabled = false;
 				}
 			}
 		}
