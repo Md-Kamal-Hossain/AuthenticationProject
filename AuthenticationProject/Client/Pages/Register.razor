@@ -45,20 +45,12 @@
 @code {
 	public string TokenMessage { get; set; } = "";
 	[Parameter] public string Value { get; set; } = "";
-	[Parameter] public EventCallback<string> ValueChanged { get; set; }
-
-	//[Parameter] public string? Label { get; set; }
 	
-
-	private void OnChange(ChangeEventArgs e)
-	{
-		ValueChanged.InvokeAsync(e.Value.ToString());
-	}
 	RegModel reg = new RegModel();
 	string message = string.Empty, login = string.Empty;
 	bool isDisabled = false;
 	bool isReg = false;
-	string userEnteredToken;
+	public string userEnteredToken = "";
 	private void SetValue(string Value)
 	{
 		userEnteredToken = Value;
@@ -69,11 +61,11 @@
 		isDisabled = true;
 		if (isReg)
 		{
-			//Console.WriteLine(userEnteredToken);
+
 			if (!userEnteredToken.Equals(TokenMessage))
 			{
 				message = "Wrong token is provided";
-				//login = "Click here to LOGIN.";
+
 			}
 			else
 			{
@@ -84,7 +76,7 @@
 
 						LoginResult result = await msg.Content.ReadFromJsonAsync<LoginResult>();
 						message = result.message;
-						//TokenMessage = result.jwtBearer;
+
 
 
 						if (result.success)
@@ -113,13 +105,11 @@
 					TokenMessage = result.jwtBearer;
 
 
-					//if (result.success)
-					//{
-					//	message += " Please LOGIN to continue.";
-					//	login = "Click here to LOGIN.";
-					//}
-					//else
-					//	isDisabled = false;
+
+				}
+				else
+				{
+					Console.WriteLine("No Token Generated");
 				}
 			}
 		}
